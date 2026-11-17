@@ -16,22 +16,34 @@
             <div class="space-y-4">
                 <h2 class="text-xl font-semibold border-b pb-2">Inputs</h2>
                 <div>
+                    <label class="block text-sm font-medium">โหมดไบอัส:</label>
+                    <select name="mode" id="mode" class="w-full border p-2 rounded">
+                        <option value="divider" {% if (form.mode or 'divider') == 'divider' %}selected{% endif %}>Voltage Divider Bias</option>
+                        <option value="fixed" {% if form.mode == 'fixed' %}selected{% endif %}>Fixed Bias</option>
+                        <option value="emitter" {% if form.mode == 'emitter' %}selected{% endif %}>Emitter Bias</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block text-sm font-medium">VCC (V):</label>
                     <input type="number" step="any" name="vcc" id="vcc" value="{{ form.vcc or '12' }}" class="w-full border p-2 rounded">
                 </div>
-                <div>
+                <div data-mode="divider">
                     <label class="block text-sm font-medium">R1 (kΩ):</label>
                     <input type="number" step="any" name="r1" id="r1" value="{{ form.r1 or '82' }}" class="w-full border p-2 rounded">
                 </div>
-                <div>
+                <div data-mode="divider">
                     <label class="block text-sm font-medium">R2 (kΩ):</label>
                     <input type="number" step="any" name="r2" id="r2" value="{{ form.r2 or '22' }}" class="w-full border p-2 rounded">
+                </div>
+                <div data-mode="fixed emitter">
+                    <label class="block text-sm font-medium">RB (kΩ):</label>
+                    <input type="number" step="any" name="rb" id="rb" value="{{ form.rb or '470' }}" class="w-full border p-2 rounded">
                 </div>
                 <div>
                     <label class="block text-sm font-medium">RC (kΩ):</label>
                     <input type="number" step="any" name="rc" id="rc" value="{{ form.rc or '2.2' }}" class="w-full border p-2 rounded">
                 </div>
-                <div>
+                <div data-mode="emitter divider">
                     <label class="block text-sm font-medium">RE (kΩ):</label>
                     <input type="number" step="any" name="re" id="re" value="{{ form.re or '1.0' }}" class="w-full border p-2 rounded">
                 </div>
@@ -39,79 +51,191 @@
                     <label class="block text-sm font-medium">Beta (β):</label>
                     <input type="number" step="any" name="beta" id="beta" value="{{ form.beta or '100' }}" class="w-full border p-2 rounded">
                 </div>
+                <div>
+                    <label class="block text-sm font-medium">VBE (V):</label>
+                    <input type="number" step="any" name="vbe" id="vbe" value="{{ form.vbe or '0.7' }}" class="w-full border p-2 rounded">
+                </div>
                 <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded font-semibold hover:bg-indigo-700 transition">คำนวณ DC Bias</button>
             </div>
 
             <!-- Middle: Circuit Diagram -->
             <div class="flex items-center justify-center border-l border-r border-slate-200 p-4">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 470" class="w-full max-w-lg h-auto">
+                <div data-circuit="divider" class="w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 470" class="w-full max-w-lg h-auto">
                   <rect width="100%" height="100%" fill="white"/>
                   <g stroke="black" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
 
                     <!-- ===== VCC rail ===== -->
-                    <line x1="220" y1="40" x2="220" y2="85"/>
-                    <line x1="110" y1="85" x2="330" y2="85"/>
-                    <circle cx="220" cy="40" r="4" fill="black" stroke="none"/>
-                    <text x="245" y="46" font-family="sans-serif" font-size="15" font-weight="bold" fill="black" stroke="none" id="svg-vcc">Vcc = {{ form.vcc or '12' }} V</text>
+                    <circle cx="180" cy="40" r="4" fill="black" stroke="none"/>
+                    <line x1="180" y1="40" x2="180" y2="85"/>
+                    <line x1="110" y1="85" x2="250" y2="85"/>
+                    <text x="200" y="46" font-family="sans-serif" font-size="15" font-weight="bold" fill="black" stroke="none" data-bind="vcc">Vcc = {{ form.vcc or '12' }} V</text>
 
-                    <!-- ===== R1 (left branch, top) ===== -->
-                    <line x1="110" y1="85" x2="110" y2="115"/>
-                    <path d="M110 115 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
-                    <line x1="110" y1="195" x2="110" y2="255"/>
+                    <!-- ===== R1 (left branch) ===== -->
+                    <line x1="110" y1="85" x2="110" y2="105"/>
+                    <path d="M110 105 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="110" y1="185" x2="110" y2="245"/>
 
-                    <!-- base node -->
-                    <circle cx="110" cy="255" r="4" fill="black" stroke="none"/>
-                    <line x1="110" y1="255" x2="175" y2="255"/>
+                    <!-- base node + lead -->
+                    <circle cx="110" cy="245" r="4" fill="black" stroke="none"/>
+                    <line x1="110" y1="245" x2="200" y2="245"/>
 
-                    <!-- ===== R2 (left branch, bottom) ===== -->
-                    <line x1="110" y1="255" x2="110" y2="295"/>
-                    <path d="M110 295 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
-                    <line x1="110" y1="375" x2="110" y2="405"/>
+                    <!-- ===== R2 (left branch) ===== -->
+                    <line x1="110" y1="245" x2="110" y2="285"/>
+                    <path d="M110 285 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="110" y1="365" x2="110" y2="395"/>
 
                     <!-- ground (R2) -->
-                    <line x1="88" y1="405" x2="132" y2="405"/>
-                    <line x1="95" y1="411" x2="125" y2="411"/>
-                    <line x1="102" y1="417" x2="118" y2="417"/>
-
-                    <!-- ===== RC (right branch, top) ===== -->
-                    <line x1="330" y1="85" x2="330" y2="115"/>
-                    <path d="M330 115 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
-                    <line x1="330" y1="195" x2="330" y2="215"/>
+                    <line x1="88" y1="395" x2="132" y2="395"/>
+                    <line x1="95" y1="401" x2="125" y2="401"/>
+                    <line x1="102" y1="407" x2="118" y2="407"/>
 
                     <!-- ===== Q1 NPN ===== -->
-                    <circle cx="220" cy="255" r="45" fill="#dbeafe"/>
-                    <line x1="175" y1="225" x2="175" y2="285" stroke-width="4"/>
+                    <circle cx="225" cy="245" r="45" fill="#dbeafe"/>
+                    <line x1="200" y1="218" x2="200" y2="272" stroke-width="4"/>
                     <!-- collector -->
-                    <line x1="175" y1="240" x2="235" y2="215"/>
-                    <line x1="235" y1="215" x2="330" y2="215"/>
+                    <line x1="200" y1="230" x2="250" y2="205"/>
+                    <line x1="250" y1="205" x2="250" y2="185"/>
                     <!-- emitter -->
-                    <line x1="175" y1="270" x2="235" y2="295"/>
-                    <line x1="235" y1="295" x2="330" y2="295"/>
-                    <polygon points="235,295 218,294 222,283" fill="black" stroke="none"/>
+                    <line x1="200" y1="260" x2="250" y2="285"/>
+                    <line x1="250" y1="285" x2="250" y2="305"/>
+                    <polygon points="250,285 235,283 240,274" fill="black" stroke="none"/>
 
-                    <!-- ===== RE (right branch, bottom) ===== -->
-                    <line x1="330" y1="295" x2="330" y2="315"/>
-                    <path d="M330 315 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
-                    <line x1="330" y1="395" x2="330" y2="425"/>
+                    <!-- ===== RC (right branch, above collector) ===== -->
+                    <line x1="250" y1="85" x2="250" y2="105"/>
+                    <path d="M250 105 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+
+                    <!-- ===== RE (right branch, below emitter) ===== -->
+                    <line x1="250" y1="305" x2="250" y2="325"/>
+                    <path d="M250 325 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="250" y1="405" x2="250" y2="430"/>
 
                     <!-- ground (RE) -->
-                    <line x1="308" y1="425" x2="352" y2="425"/>
-                    <line x1="315" y1="431" x2="345" y2="431"/>
-                    <line x1="322" y1="437" x2="338" y2="437"/>
+                    <line x1="228" y1="430" x2="272" y2="430"/>
+                    <line x1="235" y1="436" x2="265" y2="436"/>
+                    <line x1="242" y1="442" x2="258" y2="442"/>
                   </g>
 
                   <!-- ===== Labels ===== -->
-                  <text x="8" y="165" font-family="sans-serif" font-size="14" fill="black" id="svg-r1">R1 = {{ form.r1 or '82' }} kΩ</text>
-                  <text x="8" y="345" font-family="sans-serif" font-size="14" fill="black" id="svg-r2">R2 = {{ form.r2 or '22' }} kΩ</text>
-                  <text x="345" y="165" font-family="sans-serif" font-size="14" fill="black" id="svg-rc">RC = {{ form.rc or '2.2' }} kΩ</text>
-                  <text x="345" y="355" font-family="sans-serif" font-size="14" fill="black" id="svg-re">RE = {{ form.re or '1.0' }} kΩ</text>
-                  <text x="160" y="345" font-family="sans-serif" font-size="12" font-weight="bold" fill="black" id="svg-beta">Q1 NPN (β = {{ form.beta or '100' }})</text>
+                  <text x="8" y="150" font-family="sans-serif" font-size="14" fill="black" data-bind="r1">R1 = {{ form.r1 or '82' }} kΩ</text>
+                  <text x="8" y="330" font-family="sans-serif" font-size="14" fill="black" data-bind="r2">R2 = {{ form.r2 or '22' }} kΩ</text>
+                  <text x="265" y="150" font-family="sans-serif" font-size="14" fill="black" data-bind="rc">RC = {{ form.rc or '2.2' }} kΩ</text>
+                  <text x="265" y="370" font-family="sans-serif" font-size="14" fill="black" data-bind="re">RE = {{ form.re or '1.0' }} kΩ</text>
+                  <text x="130" y="318" font-family="sans-serif" font-size="12" font-weight="bold" fill="black" data-bind="beta">Q1 NPN (β = {{ form.beta or '100' }})</text>
                 </svg>
+                </div>
+
+                <div data-circuit="fixed" class="w-full hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 470" class="w-full max-w-lg h-auto">
+                  <rect width="100%" height="100%" fill="white"/>
+                  <g stroke="black" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+                    <!-- ===== VCC rail ===== -->
+                    <circle cx="180" cy="40" r="4" fill="black" stroke="none"/>
+                    <line x1="180" y1="40" x2="180" y2="85"/>
+                    <line x1="110" y1="85" x2="250" y2="85"/>
+                    <text x="200" y="46" font-family="sans-serif" font-size="15" font-weight="bold" fill="black" stroke="none" data-bind="vcc">Vcc = {{ form.vcc or '12' }} V</text>
+
+                    <!-- ===== RB (left branch, VCC to Base) ===== -->
+                    <line x1="110" y1="85" x2="110" y2="105"/>
+                    <path d="M110 105 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="110" y1="185" x2="110" y2="245"/>
+
+                    <!-- base node + lead -->
+                    <circle cx="110" cy="245" r="4" fill="black" stroke="none"/>
+                    <line x1="110" y1="245" x2="200" y2="245"/>
+
+                    <!-- ===== Q1 NPN ===== -->
+                    <circle cx="225" cy="245" r="45" fill="#dbeafe"/>
+                    <line x1="200" y1="218" x2="200" y2="272" stroke-width="4"/>
+                    <!-- collector -->
+                    <line x1="200" y1="230" x2="250" y2="205"/>
+                    <line x1="250" y1="205" x2="250" y2="185"/>
+                    <!-- emitter -->
+                    <line x1="200" y1="260" x2="250" y2="285"/>
+                    <polygon points="250,285 235,283 240,274" fill="black" stroke="none"/>
+
+                    <!-- ===== RC (right branch, above collector) ===== -->
+                    <line x1="250" y1="85" x2="250" y2="105"/>
+                    <path d="M250 105 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+
+                    <!-- ===== Emitter directly to ground (no RE) ===== -->
+                    <line x1="250" y1="285" x2="250" y2="430"/>
+                    <line x1="228" y1="430" x2="272" y2="430"/>
+                    <line x1="235" y1="436" x2="265" y2="436"/>
+                    <line x1="242" y1="442" x2="258" y2="442"/>
+                  </g>
+
+                  <!-- ===== Labels ===== -->
+                  <text x="8" y="150" font-family="sans-serif" font-size="14" fill="black" data-bind="rb">RB = {{ form.rb or '470' }} kΩ</text>
+                  <text x="265" y="150" font-family="sans-serif" font-size="14" fill="black" data-bind="rc">RC = {{ form.rc or '2.2' }} kΩ</text>
+                  <text x="130" y="318" font-family="sans-serif" font-size="12" font-weight="bold" fill="black" data-bind="beta">Q1 NPN (β = {{ form.beta or '100' }})</text>
+                </svg>
+                </div>
+
+                <div data-circuit="emitter" class="w-full hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 470" class="w-full max-w-lg h-auto">
+                  <rect width="100%" height="100%" fill="white"/>
+                  <g stroke="black" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+                    <!-- ===== VCC rail ===== -->
+                    <circle cx="180" cy="40" r="4" fill="black" stroke="none"/>
+                    <line x1="180" y1="40" x2="180" y2="85"/>
+                    <line x1="110" y1="85" x2="250" y2="85"/>
+                    <text x="200" y="46" font-family="sans-serif" font-size="15" font-weight="bold" fill="black" stroke="none" data-bind="vcc">Vcc = {{ form.vcc or '12' }} V</text>
+
+                    <!-- ===== RB (left branch, VCC to Base) ===== -->
+                    <line x1="110" y1="85" x2="110" y2="105"/>
+                    <path d="M110 105 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="110" y1="185" x2="110" y2="245"/>
+
+                    <!-- base node + lead -->
+                    <circle cx="110" cy="245" r="4" fill="black" stroke="none"/>
+                    <line x1="110" y1="245" x2="200" y2="245"/>
+
+                    <!-- ===== Q1 NPN ===== -->
+                    <circle cx="225" cy="245" r="45" fill="#dbeafe"/>
+                    <line x1="200" y1="218" x2="200" y2="272" stroke-width="4"/>
+                    <!-- collector -->
+                    <line x1="200" y1="230" x2="250" y2="205"/>
+                    <line x1="250" y1="205" x2="250" y2="185"/>
+                    <!-- emitter -->
+                    <line x1="200" y1="260" x2="250" y2="285"/>
+                    <line x1="250" y1="285" x2="250" y2="305"/>
+                    <polygon points="250,285 235,283 240,274" fill="black" stroke="none"/>
+
+                    <!-- ===== RC (right branch, above collector) ===== -->
+                    <line x1="250" y1="85" x2="250" y2="105"/>
+                    <path d="M250 105 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+
+                    <!-- ===== RE (right branch, below emitter) ===== -->
+                    <line x1="250" y1="305" x2="250" y2="325"/>
+                    <path d="M250 325 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="250" y1="405" x2="250" y2="430"/>
+
+                    <!-- ground (RE) -->
+                    <line x1="228" y1="430" x2="272" y2="430"/>
+                    <line x1="235" y1="436" x2="265" y2="436"/>
+                    <line x1="242" y1="442" x2="258" y2="442"/>
+                  </g>
+
+                  <!-- ===== Labels ===== -->
+                  <text x="8" y="150" font-family="sans-serif" font-size="14" fill="black" data-bind="rb">RB = {{ form.rb or '470' }} kΩ</text>
+                  <text x="265" y="150" font-family="sans-serif" font-size="14" fill="black" data-bind="rc">RC = {{ form.rc or '2.2' }} kΩ</text>
+                  <text x="265" y="370" font-family="sans-serif" font-size="14" fill="black" data-bind="re">RE = {{ form.re or '1.0' }} kΩ</text>
+                  <text x="130" y="318" font-family="sans-serif" font-size="12" font-weight="bold" fill="black" data-bind="beta">Q1 NPN (β = {{ form.beta or '100' }})</text>
+                </svg>
+                </div>
             </div>
 
             <!-- Right: Results -->
             <div class="space-y-4">
                 <h2 class="text-xl font-semibold border-b pb-2">Results</h2>
+                {% if error %}
+                <div class="bg-red-50 border border-red-200 text-red-800 p-3 rounded text-sm">{{ error }}</div>
+                {% endif %}
+                {% set mode_labels = {'divider': 'Voltage Divider Bias', 'fixed': 'Fixed Bias', 'emitter': 'Emitter Bias'} %}
+                <div class="text-sm text-slate-500">โหมด: <span id="mode-label" class="font-semibold text-slate-700">{{ mode_labels.get(form.mode or 'divider', 'Voltage Divider Bias') }}</span></div>
                 {% if result %}
                 <div class="space-y-3">
                     <div class="bg-white p-3 border rounded shadow-sm">
@@ -139,26 +263,49 @@
         </form>
 
         <script>
-            const updateSvg = (id, labelPrefix, unit, isBeta=false) => {
-                const input = document.getElementById(id);
-                const svgElement = document.getElementById('svg-' + id);
-                if (input && svgElement) {
-                    input.addEventListener('input', () => {
-                        if (isBeta) {
-                            svgElement.textContent = `Q1 NPN (β = ${input.value})`;
-                        } else {
-                            svgElement.textContent = `${labelPrefix} = ${input.value} ${unit}`;
-                        }
-                    });
-                }
+            const modeSelect = document.getElementById('mode');
+
+            const modeNames = {
+                divider: 'Voltage Divider Bias',
+                fixed: 'Fixed Bias',
+                emitter: 'Emitter Bias',
             };
 
-            updateSvg('vcc', 'Vcc', 'V');
-            updateSvg('r1', 'R1', 'kΩ');
-            updateSvg('r2', 'R2', 'kΩ');
-            updateSvg('rc', 'RC', 'kΩ');
-            updateSvg('re', 'RE', 'kΩ');
-            updateSvg('beta', '', '', true);
+            const labelMap = {
+                vcc: v => `Vcc = ${v} V`,
+                rb:  v => `RB = ${v} kΩ`,
+                r1:  v => `R1 = ${v} kΩ`,
+                r2:  v => `R2 = ${v} kΩ`,
+                rc:  v => `RC = ${v} kΩ`,
+                re:  v => `RE = ${v} kΩ`,
+                beta: v => `Q1 NPN (β = ${v})`,
+            };
+
+            function refreshLabels() {
+                document.querySelectorAll('[data-bind]').forEach(el => {
+                    const input = document.getElementById(el.dataset.bind);
+                    const formatter = labelMap[el.dataset.bind];
+                    if (input && formatter) {
+                        el.textContent = formatter(input.value);
+                    }
+                });
+            }
+
+            function applyMode() {
+                const mode = modeSelect.value;
+                document.querySelectorAll('[data-mode]').forEach(el => {
+                    el.classList.toggle('hidden', !el.dataset.mode.split(/\s+/).includes(mode));
+                });
+                document.querySelectorAll('[data-circuit]').forEach(el => {
+                    el.classList.toggle('hidden', el.dataset.circuit !== mode);
+                });
+                document.getElementById('mode-label').textContent = modeNames[mode] || mode;
+                refreshLabels();
+            }
+
+            modeSelect.addEventListener('change', applyMode);
+            document.querySelectorAll('input').forEach(i => i.addEventListener('input', refreshLabels));
+            applyMode();
         </script>
 </body>
 </html>
