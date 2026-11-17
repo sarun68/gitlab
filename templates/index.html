@@ -11,40 +11,102 @@
             <h1 class="text-3xl font-bold text-slate-800">BJT Common-Emitter DC Bias Analyzer</h1>
         </header>
 
-        <form method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <form method="POST" id="bias-form" class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Left: Inputs -->
             <div class="space-y-4">
                 <h2 class="text-xl font-semibold border-b pb-2">Inputs</h2>
                 <div>
                     <label class="block text-sm font-medium">VCC (V):</label>
-                    <input type="number" step="any" name="vcc" value="{{ form.vcc or '12' }}" class="w-full border p-2 rounded">
+                    <input type="number" step="any" name="vcc" id="vcc" value="{{ form.vcc or '12' }}" class="w-full border p-2 rounded">
                 </div>
                 <div>
                     <label class="block text-sm font-medium">R1 (kΩ):</label>
-                    <input type="number" step="any" name="r1" value="{{ form.r1 or '82' }}" class="w-full border p-2 rounded">
+                    <input type="number" step="any" name="r1" id="r1" value="{{ form.r1 or '82' }}" class="w-full border p-2 rounded">
                 </div>
                 <div>
                     <label class="block text-sm font-medium">R2 (kΩ):</label>
-                    <input type="number" step="any" name="r2" value="{{ form.r2 or '22' }}" class="w-full border p-2 rounded">
+                    <input type="number" step="any" name="r2" id="r2" value="{{ form.r2 or '22' }}" class="w-full border p-2 rounded">
                 </div>
                 <div>
                     <label class="block text-sm font-medium">RC (kΩ):</label>
-                    <input type="number" step="any" name="rc" value="{{ form.rc or '2.2' }}" class="w-full border p-2 rounded">
+                    <input type="number" step="any" name="rc" id="rc" value="{{ form.rc or '2.2' }}" class="w-full border p-2 rounded">
                 </div>
                 <div>
                     <label class="block text-sm font-medium">RE (kΩ):</label>
-                    <input type="number" step="any" name="re" value="{{ form.re or '1.0' }}" class="w-full border p-2 rounded">
+                    <input type="number" step="any" name="re" id="re" value="{{ form.re or '1.0' }}" class="w-full border p-2 rounded">
                 </div>
                 <div>
                     <label class="block text-sm font-medium">Beta (β):</label>
-                    <input type="number" step="any" name="beta" value="{{ form.beta or '100' }}" class="w-full border p-2 rounded">
+                    <input type="number" step="any" name="beta" id="beta" value="{{ form.beta or '100' }}" class="w-full border p-2 rounded">
                 </div>
                 <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded font-semibold hover:bg-indigo-700 transition">คำนวณ DC Bias</button>
             </div>
 
-            <!-- Middle: Circuit Diagram using static image -->
+            <!-- Middle: Circuit Diagram -->
             <div class="flex items-center justify-center border-l border-r border-slate-200 p-4">
-                <img src="{{ url_for('static', filename='circuit.png') }}" alt="Circuit Diagram" class="max-w-lg rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 470" class="w-full max-w-lg h-auto">
+                  <rect width="100%" height="100%" fill="white"/>
+                  <g stroke="black" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+                    <!-- ===== VCC rail ===== -->
+                    <line x1="220" y1="40" x2="220" y2="85"/>
+                    <line x1="110" y1="85" x2="330" y2="85"/>
+                    <circle cx="220" cy="40" r="4" fill="black" stroke="none"/>
+                    <text x="245" y="46" font-family="sans-serif" font-size="15" font-weight="bold" fill="black" stroke="none" id="svg-vcc">Vcc = {{ form.vcc or '12' }} V</text>
+
+                    <!-- ===== R1 (left branch, top) ===== -->
+                    <line x1="110" y1="85" x2="110" y2="115"/>
+                    <path d="M110 115 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="110" y1="195" x2="110" y2="255"/>
+
+                    <!-- base node -->
+                    <circle cx="110" cy="255" r="4" fill="black" stroke="none"/>
+                    <line x1="110" y1="255" x2="175" y2="255"/>
+
+                    <!-- ===== R2 (left branch, bottom) ===== -->
+                    <line x1="110" y1="255" x2="110" y2="295"/>
+                    <path d="M110 295 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="110" y1="375" x2="110" y2="405"/>
+
+                    <!-- ground (R2) -->
+                    <line x1="88" y1="405" x2="132" y2="405"/>
+                    <line x1="95" y1="411" x2="125" y2="411"/>
+                    <line x1="102" y1="417" x2="118" y2="417"/>
+
+                    <!-- ===== RC (right branch, top) ===== -->
+                    <line x1="330" y1="85" x2="330" y2="115"/>
+                    <path d="M330 115 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="330" y1="195" x2="330" y2="215"/>
+
+                    <!-- ===== Q1 NPN ===== -->
+                    <circle cx="220" cy="255" r="45" fill="#dbeafe"/>
+                    <line x1="175" y1="225" x2="175" y2="285" stroke-width="4"/>
+                    <!-- collector -->
+                    <line x1="175" y1="240" x2="235" y2="215"/>
+                    <line x1="235" y1="215" x2="330" y2="215"/>
+                    <!-- emitter -->
+                    <line x1="175" y1="270" x2="235" y2="295"/>
+                    <line x1="235" y1="295" x2="330" y2="295"/>
+                    <polygon points="235,295 218,294 222,283" fill="black" stroke="none"/>
+
+                    <!-- ===== RE (right branch, bottom) ===== -->
+                    <line x1="330" y1="295" x2="330" y2="315"/>
+                    <path d="M330 315 l-12 8 l24 16 l-24 16 l24 16 l-24 16 l12 8"/>
+                    <line x1="330" y1="395" x2="330" y2="425"/>
+
+                    <!-- ground (RE) -->
+                    <line x1="308" y1="425" x2="352" y2="425"/>
+                    <line x1="315" y1="431" x2="345" y2="431"/>
+                    <line x1="322" y1="437" x2="338" y2="437"/>
+                  </g>
+
+                  <!-- ===== Labels ===== -->
+                  <text x="8" y="165" font-family="sans-serif" font-size="14" fill="black" id="svg-r1">R1 = {{ form.r1 or '82' }} kΩ</text>
+                  <text x="8" y="345" font-family="sans-serif" font-size="14" fill="black" id="svg-r2">R2 = {{ form.r2 or '22' }} kΩ</text>
+                  <text x="345" y="165" font-family="sans-serif" font-size="14" fill="black" id="svg-rc">RC = {{ form.rc or '2.2' }} kΩ</text>
+                  <text x="345" y="355" font-family="sans-serif" font-size="14" fill="black" id="svg-re">RE = {{ form.re or '1.0' }} kΩ</text>
+                  <text x="160" y="345" font-family="sans-serif" font-size="12" font-weight="bold" fill="black" id="svg-beta">Q1 NPN (β = {{ form.beta or '100' }})</text>
+                </svg>
             </div>
 
             <!-- Right: Results -->
@@ -75,6 +137,28 @@
                 {% endif %}
             </div>
         </form>
-    </div>
+
+        <script>
+            const updateSvg = (id, labelPrefix, unit, isBeta=false) => {
+                const input = document.getElementById(id);
+                const svgElement = document.getElementById('svg-' + id);
+                if (input && svgElement) {
+                    input.addEventListener('input', () => {
+                        if (isBeta) {
+                            svgElement.textContent = `Q1 NPN (β = ${input.value})`;
+                        } else {
+                            svgElement.textContent = `${labelPrefix} = ${input.value} ${unit}`;
+                        }
+                    });
+                }
+            };
+
+            updateSvg('vcc', 'Vcc', 'V');
+            updateSvg('r1', 'R1', 'kΩ');
+            updateSvg('r2', 'R2', 'kΩ');
+            updateSvg('rc', 'RC', 'kΩ');
+            updateSvg('re', 'RE', 'kΩ');
+            updateSvg('beta', '', '', true);
+        </script>
 </body>
 </html>
