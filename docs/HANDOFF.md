@@ -1,4 +1,22 @@
-# Handoff / Holdout Notes — BJT Common-Emitter DC Bias Web App
+# Current handoff — Lab 04 (2026-11-24)
+
+- Working branch: `lab04-spice-starter`; remote publication requires user choice.
+  Use `git log -1` / `git status` for the actual local commit state.
+- Flask now connects the self-authored PN2222 starter to SPICE DC/AC/transient,
+  with local SVG plots, run evidence, JSON export and preserved Lab 3 analytical modes.
+- `python -m unittest discover -v`: 30 tests pass, including real ngspice 47.
+- Actual Playwright MCP B1–B8 evidence is in `docs/validation.md` and `docs/captures`.
+- Impeccable project skill installed/loaded; polish/source-scan limitations recorded
+  in `docs/lab04-ui-review.md`. No claim of full dual-agent critique or certification.
+- Current dev server is bound to localhost:5000, debug off. Restart with `python app.py`.
+- Remaining: user/instructor approval of sourced example model, human demo,
+  review and remote publication. Do not submit an old commit SHA for these changes.
+- Ignore the historical scope/status below when implementing further changes;
+  preserve it only as a record of the earlier Lab 3 milestone.
+
+---
+
+# Archived handoff — BJT Common-Emitter DC Bias Web App
 
 ## Project
 - Repo: C:\Users\B6826123\Desktop\gitlab (origin: https://github.com/sarun68/gitlab.git, branch main)

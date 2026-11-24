@@ -1,0 +1,100 @@
+- generic [active] [ref=f4e1]:
+  - link "ข้ามไปเลือกการวิเคราะห์" [ref=f4e2] [cursor=pointer]:
+    - /url: "#analysis"
+  - main [ref=f4e3]:
+    - generic [ref=f4e4]:
+      - generic [ref=f4e5]:
+        - heading "CE Amplifier Lab" [level=1] [ref=f4e6]
+        - paragraph [ref=f4e7]: ENG29 2121 · Lab 04 — BJT Common-Emitter Simulator
+      - status [ref=f4e8]: Success · ผลจากรอบล่าสุด
+    - paragraph [ref=f4e9]:
+      - text: "SPICE model:"
+      - strong [ref=f4e10]: PN2222
+      - text: · Self-authored starter,
+      - strong [ref=f4e11]: not instructor-verified
+      - text: · โมเดลตัวอย่าง ไม่ใช่ชุดรับรองจากผู้สอน
+    - generic [ref=f4e12]:
+      - generic [ref=f4e13]:
+        - heading "Parameters" [level=2] [ref=f4e14]
+        - generic [ref=f4e15]:
+          - generic [ref=f4e16]: การวิเคราะห์ / Analysis
+          - combobox "การวิเคราะห์ / Analysis" [ref=f4e17]:
+            - option "Analytical DC · Lab 3" [selected]
+            - option "SPICE DC · Operating Point"
+            - option "SPICE AC · Frequency Response"
+            - option "SPICE Transient · Waveforms"
+        - generic [ref=f4e18]:
+          - generic [ref=f4e19]: โหมดไบอัส / Bias
+          - combobox "โหมดไบอัส / Bias" [ref=f4e20]:
+            - option "Voltage Divider Bias" [selected]
+            - option "Fixed Bias"
+            - option "Emitter Bias"
+        - generic [ref=f4e21]:
+          - generic [ref=f4e22]: VCC (V)
+          - spinbutton "VCC (V)" [ref=f4e23]: "12"
+        - generic [ref=f4e24]:
+          - generic [ref=f4e25]: R1 (kΩ)
+          - spinbutton "R1 (kΩ)" [ref=f4e26]: "100"
+        - generic [ref=f4e27]:
+          - generic [ref=f4e28]: R2 (kΩ)
+          - spinbutton "R2 (kΩ)" [ref=f4e29]: "22"
+        - generic [ref=f4e30]:
+          - generic [ref=f4e31]: RC (kΩ)
+          - spinbutton "RC (kΩ)" [ref=f4e32]: "2.2"
+        - generic [ref=f4e33]:
+          - generic [ref=f4e34]: RE (kΩ)
+          - spinbutton "RE (kΩ)" [ref=f4e35]: "1"
+        - generic [ref=f4e36]:
+          - generic [ref=f4e37]: Beta (β)
+          - spinbutton "Beta (β)" [ref=f4e38]: "100"
+        - generic [ref=f4e39]:
+          - generic [ref=f4e40]: VBE (V)
+          - spinbutton "VBE (V)" [ref=f4e41]: "0.7"
+        - paragraph [ref=f4e42]: ผลประมาณด้วย β / VBE คงที่ แยกจากโมเดล SPICE
+        - button "Calculate Analytical DC" [ref=f4e43] [cursor=pointer]
+      - generic [ref=f4e44]:
+        - heading "Circuit reference" [level=2] [ref=f4e45]
+        - paragraph [ref=f4e46]: วงจรและจุดวัดของการวิเคราะห์ที่เลือก
+        - img [ref=f4e48]:
+          - generic [ref=f4e50]: Vcc = 12 V
+          - generic [ref=f4e62]: R1 = 100 kΩ
+          - generic [ref=f4e63]: R2 = 22 kΩ
+          - generic [ref=f4e64]: RC = 2.2 kΩ
+          - generic [ref=f4e65]: RE = 1 kΩ
+          - generic [ref=f4e66]: Q1 NPN (β = 100)
+      - generic [ref=f4e67]:
+        - heading "Engineering results" [level=2] [ref=f4e68]
+        - generic [ref=f4e69]: "Bias: Voltage Divider Bias"
+        - generic [ref=f4e70]:
+          - paragraph [ref=f4e71]: Analytical DC · constant β / VBE
+          - generic [ref=f4e72]: "ย่านการทำงาน: Active"
+          - generic [ref=f4e73]: Active region approximation OK
+          - table [ref=f4e74]:
+            - rowgroup [ref=f4e75]:
+              - row [ref=f4e76]:
+                - columnheader "Parameter" [ref=f4e77]
+                - columnheader "Value" [ref=f4e78]
+              - row [ref=f4e79]:
+                - cell "VB" [ref=f4e80]
+                - cell "1.94 V" [ref=f4e81]
+              - row [ref=f4e82]:
+                - cell "VE" [ref=f4e83]
+                - cell "1.24 V" [ref=f4e84]
+              - row [ref=f4e85]:
+                - cell "VC" [ref=f4e86]
+                - cell "9.29 V" [ref=f4e87]
+              - row [ref=f4e88]:
+                - cell "VCE" [ref=f4e89]
+                - cell "8.05 V" [ref=f4e90]
+              - row [ref=f4e91]:
+                - cell "IB" [ref=f4e92]
+                - cell "12.30 µA" [ref=f4e93]
+              - row [ref=f4e94]:
+                - cell "IC" [ref=f4e95]
+                - cell "1.23 mA" [ref=f4e96]
+              - row [ref=f4e97]:
+                - cell "IE" [ref=f4e98]
+                - cell "1.24 mA" [ref=f4e99]
+    - generic [ref=f4e100]:
+      - paragraph [ref=f4e101]: Analytical ใช้สมมติฐาน β / VBE คงที่ ส่วน SPICE ใช้ PN2222 model จึงไม่จำเป็นต้องได้ตัวเลขเท่ากัน
+      - paragraph [ref=f4e102]: Local educational simulator · ไม่มีการส่งพารามิเตอร์ไปยังบริการภายนอก

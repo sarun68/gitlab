@@ -2,3 +2,16 @@ __pycache__/
 *.pyc
 .venv/
 .env
+
+# Local agent/browser runtime state (selected evidence lives under docs/captures).
+/.playwright-mcp/
+/.superpowers/
+/.impeccable/review/
+/.impeccable/*.png
+/.opencode/skills/impeccable/
+/.opencode/commands/impeccable.md
+
+# Installer downloads left from local ngspice setup; not application source.
+/ngspice-47.tar.gz
+/ngspice-47_64.7z
+/ngspice-47_64_phoenix.7z

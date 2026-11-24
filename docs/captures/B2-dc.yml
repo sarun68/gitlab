@@ -1,0 +1,129 @@
+- generic [active] [ref=f7e1]:
+  - link "ข้ามไปเลือกการวิเคราะห์" [ref=f7e2] [cursor=pointer]:
+    - /url: "#analysis"
+  - main [ref=f7e3]:
+    - generic [ref=f7e4]:
+      - generic [ref=f7e5]:
+        - heading "CE Amplifier Lab" [level=1] [ref=f7e6]
+        - paragraph [ref=f7e7]: ENG29 2121 · Lab 04 — BJT Common-Emitter Simulator
+      - status [ref=f7e8]: Success · ผลจากรอบล่าสุด
+    - paragraph [ref=f7e9]:
+      - text: "SPICE model:"
+      - strong [ref=f7e10]: PN2222
+      - text: · Self-authored starter,
+      - strong [ref=f7e11]: not instructor-verified
+      - text: · โมเดลตัวอย่าง ไม่ใช่ชุดรับรองจากผู้สอน
+    - generic [ref=f7e12]:
+      - generic [ref=f7e13]:
+        - heading "Parameters" [level=2] [ref=f7e14]
+        - generic [ref=f7e15]:
+          - generic [ref=f7e16]: การวิเคราะห์ / Analysis
+          - combobox "การวิเคราะห์ / Analysis" [ref=f7e17]:
+            - option "Analytical DC · Lab 3"
+            - option "SPICE DC · Operating Point" [selected]
+            - option "SPICE AC · Frequency Response"
+            - option "SPICE Transient · Waveforms"
+        - generic [ref=f7e18]:
+          - generic [ref=f7e19]: โหมดไบอัส / Bias
+          - combobox "โหมดไบอัส / Bias" [ref=f7e20]:
+            - option "Voltage Divider Bias" [selected]
+            - option "Fixed Bias" [disabled]
+            - option "Emitter Bias" [disabled]
+        - generic [ref=f7e21]:
+          - generic [ref=f7e22]: VCC (V)
+          - spinbutton "VCC (V)" [ref=f7e23]: "12"
+        - generic [ref=f7e24]:
+          - generic [ref=f7e25]: R1 (kΩ)
+          - spinbutton "R1 (kΩ)" [ref=f7e26]: "100"
+        - generic [ref=f7e27]:
+          - generic [ref=f7e28]: R2 (kΩ)
+          - spinbutton "R2 (kΩ)" [ref=f7e29]: "22"
+        - generic [ref=f7e30]:
+          - generic [ref=f7e31]: RC (kΩ)
+          - spinbutton "RC (kΩ)" [ref=f7e32]: "2.2"
+        - generic [ref=f7e33]:
+          - generic [ref=f7e34]: RE (kΩ)
+          - spinbutton "RE (kΩ)" [ref=f7e35]: "1"
+        - generic [ref=f7e36]:
+          - generic [ref=f7e37]: RL (kΩ)
+          - spinbutton "RL (kΩ)" [ref=f7e38]: "10"
+        - generic [ref=f7e39]:
+          - generic [ref=f7e40]: Cin (µF)
+          - spinbutton "Cin (µF)" [ref=f7e41]: "10"
+        - generic [ref=f7e42]:
+          - generic [ref=f7e43]: Cout (µF)
+          - spinbutton "Cout (µF)" [ref=f7e44]: "10"
+        - paragraph [ref=f7e45]: CE reference เท่านั้น · Q1 PN2222 · 27 °C · ไม่มี emitter bypass
+        - button "Run Simulation" [ref=f7e46] [cursor=pointer]
+      - generic [ref=f7e47]:
+        - heading "Circuit reference" [level=2] [ref=f7e48]
+        - paragraph [ref=f7e49]: วงจรและจุดวัดของการวิเคราะห์ที่เลือก
+        - generic [ref=f7e50]:
+          - img "CE Voltage Divider amplifier R1 and RC connect VCC to base and collector. R2 and RE connect base and emitter to ground. PN2222 NPN, input through Cin, output through Cout to RL. Shared ground, no emitter bypass." [ref=f7e51]:
+            - generic [ref=f7e67]:
+              - generic [ref=f7e68]: +VCC
+              - generic [ref=f7e69]: R1
+              - generic [ref=f7e70]: RC
+              - generic [ref=f7e71]: R2
+              - generic [ref=f7e72]: RE
+              - generic [ref=f7e73]: RL
+              - generic [ref=f7e74]: Cin
+              - generic [ref=f7e75]: Cout
+              - generic [ref=f7e76]: Vin
+              - generic [ref=f7e77]: Vout
+              - generic [ref=f7e78]: PN2222
+          - paragraph [ref=f7e82]:
+            - strong [ref=f7e83]: "Vin:"
+            - text: generator ก่อน Cin
+            - strong [ref=f7e84]: "Vout:"
+            - text: คร่อม RL หลัง Cout
+            - strong [ref=f7e85]: "DC:"
+            - text: วัด VB, VE, VC ที่ขา Q1
+      - generic [ref=f7e86]:
+        - heading "Engineering results" [level=2] [ref=f7e87]
+        - generic [ref=f7e88]: "Bias: Voltage Divider Bias"
+        - generic [ref=f7e89]:
+          - paragraph [ref=f7e90]: "Engine: ngspice · DCModel: PN2222"
+          - paragraph [ref=f7e91]: Forward-active (junction check)
+          - table "SPICE operating point" [ref=f7e92]:
+            - rowgroup [ref=f7e93]:
+              - row [ref=f7e94]:
+                - columnheader "Parameter" [ref=f7e95]
+                - columnheader "Value" [ref=f7e96]
+            - rowgroup [ref=f7e97]:
+              - row [ref=f7e98]:
+                - cell "VB" [ref=f7e99]
+                - cell "2.01576 V" [ref=f7e100]
+              - row [ref=f7e101]:
+                - cell "VE" [ref=f7e102]
+                - cell "1.36423 V" [ref=f7e103]
+              - row [ref=f7e104]:
+                - cell "VC" [ref=f7e105]
+                - cell "9.01677 V" [ref=f7e106]
+              - row [ref=f7e107]:
+                - cell "VCE" [ref=f7e108]
+                - cell "7.65254 V" [ref=f7e109]
+              - row [ref=f7e110]:
+                - cell "IC" [ref=f7e111]
+                - cell "1.356195 mA" [ref=f7e112]
+          - paragraph [ref=f7e113]:
+            - text: "Run:"
+            - code [ref=f7e114]: 3bf3ebaff8a6
+            - time [ref=f7e115]: 2026-11-24T11:04:05.547093+00:00
+    - generic [ref=f7e116]:
+      - generic [ref=f7e117]:
+        - heading "Run evidence" [level=2] [ref=f7e118]
+        - button "Download run JSON" [ref=f7e119] [cursor=pointer]
+      - paragraph [ref=f7e120]:
+        - text: ผลจาก ngspice จริง ไม่ใช่ Analytical หรือกราฟตัวอย่าง ·
+        - link "Model source" [ref=f7e121] [cursor=pointer]:
+          - /url: https://github.com/ngspice/ngspice/blob/master/examples/tclspice/tcl-testbench1/PN2222.mod
+      - group [ref=f7e122]:
+        - generic "Model SHA-256 & engine version" [ref=f7e123] [cursor=pointer]
+      - group [ref=f7e124]:
+        - generic "Netlist ที่ใช้รัน" [ref=f7e125] [cursor=pointer]
+      - group [ref=f7e126]:
+        - generic "ngspice run log" [ref=f7e127] [cursor=pointer]
+    - generic [ref=f7e128]:
+      - paragraph [ref=f7e129]: Analytical ใช้สมมติฐาน β / VBE คงที่ ส่วน SPICE ใช้ PN2222 model จึงไม่จำเป็นต้องได้ตัวเลขเท่ากัน
+      - paragraph [ref=f7e130]: Local educational simulator · ไม่มีการส่งพารามิเตอร์ไปยังบริการภายนอก

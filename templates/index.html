@@ -2,21 +2,38 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>BJT Common-Emitter DC Bias Calculator - ENG29 2121</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="BJT common-emitter lab: analytical DC bias and real ngspice DC, AC and transient simulation.">
+    <title>CE Amplifier Lab · ENG29 2121</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </head>
-<body class="bg-slate-50 min-h-screen py-10 px-4">
-    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-md p-8">
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-bold text-slate-800">BJT Common-Emitter DC Bias Analyzer</h1>
+<body>
+    {% set current_analysis = form.get('analysis', 'dc') %}
+    {% set current_mode = form.get('mode', 'divider') %}
+    <a class="skip-link" href="#analysis">ข้ามไปเลือกการวิเคราะห์</a>
+    <main class="app-shell">
+        <header class="app-header">
+            <div><h1>CE Amplifier Lab</h1><p>ENG29 2121 · Lab 04 — BJT Common-Emitter Simulator</p></div>
+            <p id="run-status" class="status {{ 'error' if error else 'success' if (result or simulation) else 'ready' }}" role="status" aria-live="polite">{{ 'Error · แก้ไขแล้วรันใหม่' if error else 'Success · ผลจากรอบล่าสุด' if (result or simulation) else 'Ready · พร้อมจำลอง' }}</p>
         </header>
+        <p class="model-notice">SPICE model: <strong>PN2222</strong> · Self-authored starter, <strong>not instructor-verified</strong> · โมเดลตัวอย่าง ไม่ใช่ชุดรับรองจากผู้สอน</p>
 
-        <form method="POST" id="bias-form" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <form method="POST" id="bias-form" class="lab-layout">
             <!-- Left: Inputs -->
-            <div class="space-y-4">
-                <h2 class="text-xl font-semibold border-b pb-2">Inputs</h2>
-                <div>
-                    <label class="block text-sm font-medium">โหมดไบอัส:</label>
+            <div class="panel parameters">
+                <h2>Parameters</h2>
+                <div class="wide">
+                    <label for="analysis">การวิเคราะห์ / Analysis</label>
+                    <select name="analysis" id="analysis">
+                        {% for value, label in [('analytical', 'Analytical DC · Lab 3'), ('dc', 'SPICE DC · Operating Point'), ('ac', 'SPICE AC · Frequency Response'), ('transient', 'SPICE Transient · Waveforms')] %}
+                        <option value="{{ value }}" {{ 'selected' if form.analysis == value }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="wide">
+                    <label for="mode">โหมดไบอัส / Bias</label>
                     <select name="mode" id="mode" class="w-full border p-2 rounded">
                         <option value="divider" {% if (form.mode or 'divider') == 'divider' %}selected{% endif %}>Voltage Divider Bias</option>
                         <option value="fixed" {% if form.mode == 'fixed' %}selected{% endif %}>Fixed Bias</option>
@@ -24,43 +41,77 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium">VCC (V):</label>
-                    <input type="number" step="any" name="vcc" id="vcc" value="{{ form.vcc or '12' }}" class="w-full border p-2 rounded">
+                    <label for="vcc">VCC (V)</label>
+                    <input type="number" step="any" name="vcc" id="vcc" value="{{ form.get('vcc', '12') }}" class="w-full border p-2 rounded">
                 </div>
                 <div data-mode="divider">
-                    <label class="block text-sm font-medium">R1 (kΩ):</label>
-                    <input type="number" step="any" name="r1" id="r1" value="{{ form.r1 or '82' }}" class="w-full border p-2 rounded">
+                    <label for="r1">R1 (kΩ)</label>
+                    <input type="number" step="any" name="r1" id="r1" value="{{ form.get('r1', '100') }}" class="w-full border p-2 rounded">
                 </div>
                 <div data-mode="divider">
-                    <label class="block text-sm font-medium">R2 (kΩ):</label>
-                    <input type="number" step="any" name="r2" id="r2" value="{{ form.r2 or '22' }}" class="w-full border p-2 rounded">
+                    <label for="r2">R2 (kΩ)</label>
+                    <input type="number" step="any" name="r2" id="r2" value="{{ form.get('r2', '22') }}" class="w-full border p-2 rounded">
                 </div>
                 <div data-mode="fixed emitter">
-                    <label class="block text-sm font-medium">RB (kΩ):</label>
-                    <input type="number" step="any" name="rb" id="rb" value="{{ form.rb or '470' }}" class="w-full border p-2 rounded">
+                    <label for="rb">RB (kΩ)</label>
+                    <input type="number" step="any" name="rb" id="rb" value="{{ form.get('rb', '470') }}" class="w-full border p-2 rounded">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium">RC (kΩ):</label>
-                    <input type="number" step="any" name="rc" id="rc" value="{{ form.rc or '2.2' }}" class="w-full border p-2 rounded">
+                    <label for="rc">RC (kΩ)</label>
+                    <input type="number" step="any" name="rc" id="rc" value="{{ form.get('rc', '2.2') }}" class="w-full border p-2 rounded">
                 </div>
                 <div data-mode="emitter divider">
-                    <label class="block text-sm font-medium">RE (kΩ):</label>
-                    <input type="number" step="any" name="re" id="re" value="{{ form.re or '1.0' }}" class="w-full border p-2 rounded">
+                    <label for="re">RE (kΩ)</label>
+                    <input type="number" step="any" name="re" id="re" value="{{ form.get('re', '1.0') }}" class="w-full border p-2 rounded">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium">Beta (β):</label>
-                    <input type="number" step="any" name="beta" id="beta" value="{{ form.beta or '100' }}" class="w-full border p-2 rounded">
+                <div data-analysis="analytical">
+                    <label for="beta">Beta (β)</label>
+                    <input type="number" step="any" name="beta" id="beta" value="{{ form.get('beta', '100') }}" class="w-full border p-2 rounded">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium">VBE (V):</label>
-                    <input type="number" step="any" name="vbe" id="vbe" value="{{ form.vbe or '0.7' }}" class="w-full border p-2 rounded">
+                <div data-analysis="analytical">
+                    <label for="vbe">VBE (V)</label>
+                    <input type="number" step="any" name="vbe" id="vbe" value="{{ form.get('vbe', '0.7') }}" class="w-full border p-2 rounded">
                 </div>
-                <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded font-semibold hover:bg-indigo-700 transition">คำนวณ DC Bias</button>
+                {% for name, label, default, modes in [('rl', 'RL (kΩ)', '10', 'dc ac transient'), ('cin', 'Cin (µF)', '10', 'dc ac transient'), ('cout', 'Cout (µF)', '10', 'dc ac transient'), ('amplitude_mv', 'Amplitude (mV peak)', '10', 'transient'), ('frequency_hz', 'Frequency (Hz)', '1000', 'ac transient'), ('ac_start_hz', 'Sweep start (Hz)', '10', 'ac'), ('ac_stop_hz', 'Sweep stop (Hz)', '100000000', 'ac')] %}
+                <div data-analysis="{{ modes }}"><label for="{{ name }}">{{ label }}</label><input type="number" step="any" name="{{ name }}" id="{{ name }}" value="{{ form.get(name, default) }}"></div>
+                {% endfor %}
+                <p class="wide helper" data-analysis="analytical">ผลประมาณด้วย β / VBE คงที่ แยกจากโมเดล SPICE</p>
+                <p class="wide helper" data-analysis="dc ac transient">CE reference เท่านั้น · Q1 PN2222 · 27 °C · ไม่มี emitter bypass</p>
+                <button type="submit" id="run-button">Run Simulation</button>
             </div>
 
             <!-- Middle: Circuit Diagram -->
-            <div class="flex items-center justify-center border-l border-r border-slate-200 p-4">
-                <div data-circuit="divider" class="w-full">
+            <div class="panel circuit-panel">
+                <h2>Circuit reference</h2>
+                <p class="helper" id="circuit-description">วงจรและจุดวัดของการวิเคราะห์ที่เลือก</p>
+                <div data-circuit="ce" class="{{ 'hidden' if current_analysis == 'analytical' else '' }}">
+                    <svg viewBox="0 0 500 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ce-title ce-desc">
+                        <title id="ce-title">CE Voltage Divider amplifier</title>
+                        <desc id="ce-desc">R1 and RC connect VCC to base and collector. R2 and RE connect base and emitter to ground. PN2222 NPN, input through Cin, output through Cout to RL. Shared ground, no emitter bypass.</desc>
+                        <g fill="none" stroke="#263f55" stroke-width="2.2" stroke-linejoin="round">
+                            <path d="M155 35H310 M155 35V70 M155 115V185 M310 35V70 M310 115V150"/>
+                            <rect x="148" y="70" width="14" height="45"/><rect x="303" y="70" width="14" height="45"/>
+                            <circle cx="278" cy="188" r="40"/>
+                            <path d="M155 185H260 M260 167V206 M260 174L298 150H310 M260 199L300 225H310V240"/>
+                            <path d="M286 213L300 225 M292 222L298 214L303 227Z" fill="#263f55"/>
+                            <rect x="303" y="240" width="14" height="35"/><path d="M310 275V295"/>
+                            <path d="M155 185V230"/><rect x="148" y="230" width="14" height="45"/><path d="M155 275V295"/>
+                            <path d="M40 185H82 M94 185H155 M40 185V218 M40 250V295 M82 169V201 M94 169V201"/>
+                            <circle cx="40" cy="234" r="16"/><path d="M30 234Q35 225 40 234T50 234"/>
+                            <path d="M310 150H370 M382 150H430V205 M370 134V166 M382 134V166"/>
+                            <rect x="423" y="205" width="14" height="53"/><path d="M430 258V295 M40 295H430 M235 295V304 M222 304H248 M227 310H243"/>
+                        </g>
+                        <g fill="#18354e" font-size="15">
+                            <text x="207" y="23">+VCC</text><text x="168" y="96">R1</text><text x="323" y="96">RC</text>
+                            <text x="168" y="257">R2</text><text x="323" y="264">RE</text><text x="443" y="235">RL</text>
+                            <text x="73" y="157">Cin</text><text x="355" y="125">Cout</text><text x="6" y="207">Vin</text>
+                            <text x="424" y="139">Vout</text><text x="238" y="249">PN2222</text>
+                        </g>
+                        <g fill="#07766e"><circle cx="155" cy="185" r="4"/><circle cx="310" cy="150" r="4"/></g>
+                    </svg>
+                    <p class="measurement-note"><strong>Vin:</strong> generator ก่อน Cin<br><strong>Vout:</strong> คร่อม RL หลัง Cout<br><strong>DC:</strong> วัด VB, VE, VC ที่ขา Q1</p>
+                </div>
+                <div data-circuit="divider" class="w-full {{ 'hidden' if current_analysis != 'analytical' or current_mode != 'divider' else '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 470" class="w-full max-w-lg h-auto">
                   <rect width="100%" height="100%" fill="white"/>
                   <g stroke="black" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -117,7 +168,7 @@
                   </g>
 
                   <!-- ===== Labels ===== -->
-                  <text x="8" y="150" font-family="sans-serif" font-size="14" fill="black" data-bind="r1">R1 = {{ form.r1 or '82' }} kΩ</text>
+                  <text x="8" y="150" font-family="sans-serif" font-size="14" fill="black" data-bind="r1">R1 = {{ form.r1 or '100' }} kΩ</text>
                   <text x="8" y="330" font-family="sans-serif" font-size="14" fill="black" data-bind="r2">R2 = {{ form.r2 or '22' }} kΩ</text>
                   <text x="265" y="150" font-family="sans-serif" font-size="14" fill="black" data-bind="rc">RC = {{ form.rc or '2.2' }} kΩ</text>
                   <text x="265" y="370" font-family="sans-serif" font-size="14" fill="black" data-bind="re">RE = {{ form.re or '1.0' }} kΩ</text>
@@ -125,7 +176,7 @@
                 </svg>
                 </div>
 
-                <div data-circuit="fixed" class="w-full hidden">
+                <div data-circuit="fixed" class="w-full {{ 'hidden' if current_analysis != 'analytical' or current_mode != 'fixed' else '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 470" class="w-full max-w-lg h-auto">
                   <rect width="100%" height="100%" fill="white"/>
                   <g stroke="black" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -173,7 +224,7 @@
                 </svg>
                 </div>
 
-                <div data-circuit="emitter" class="w-full hidden">
+                <div data-circuit="emitter" class="w-full {{ 'hidden' if current_analysis != 'analytical' or current_mode != 'emitter' else '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 470" class="w-full max-w-lg h-auto">
                   <rect width="100%" height="100%" fill="white"/>
                   <g stroke="black" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -229,15 +280,44 @@
             </div>
 
             <!-- Right: Results -->
-            <div class="space-y-4">
-                <h2 class="text-xl font-semibold border-b pb-2">Results</h2>
+            <div class="panel results-panel">
+                <h2>Engineering results</h2>
                 {% if error %}
-                <div class="bg-red-50 border border-red-200 text-red-800 p-3 rounded text-sm">{{ error }}</div>
+                <div id="error-message" class="error-message" role="alert"><strong>รันไม่สำเร็จ</strong><p>{{ error }}</p><p>ตรวจค่าและหน่วย หรือการติดตั้ง ngspice แล้วกด Run อีกครั้ง</p></div>
                 {% endif %}
                 {% set mode_labels = {'divider': 'Voltage Divider Bias', 'fixed': 'Fixed Bias', 'emitter': 'Emitter Bias'} %}
-                <div class="text-sm text-slate-500">โหมด: <span id="mode-label" class="font-semibold text-slate-700">{{ mode_labels.get(form.mode or 'divider', 'Voltage Divider Bias') }}</span></div>
+                <div class="helper">Bias: <span id="mode-label">{{ mode_labels.get(form.mode or 'divider', 'Voltage Divider Bias') }}</span></div>
+                {% if simulation %}
+                <div class="run-content" id="spice-results">
+                    <p class="result-source">Engine: ngspice · {{ simulation.analysis|upper }}<br>Model: PN2222</p>
+                    {% if simulation.analysis == 'dc' %}
+                    <p class="helper">{{ summary.region }}</p>
+                    <table aria-label="SPICE operating point"><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody>
+                        {% for name, key in [('VB', 'vb_v'), ('VE', 've_v'), ('VC', 'vc_v'), ('VCE', 'vce_v')] %}
+                        <tr><td>{{ name }}</td><td data-result="{{ key }}">{{ '%.5f'|format(simulation['values'][key]) }} V</td></tr>
+                        {% endfor %}
+                        <tr><td>IC</td><td data-result="ic_a">{{ '%.6f'|format(simulation['values']['ic_a']*1000) }} mA</td></tr>
+                    </tbody></table>
+                    {% elif simulation.analysis == 'ac' %}
+                    <p>Sample near requested frequency:</p>
+                    <dl class="result-list"><dt>Frequency</dt><dd>{{ '%.5g'|format(summary.frequency_hz) }} Hz</dd>
+                    <dt>|Vout/Vin|</dt><dd>{{ '%.6f'|format(summary.gain_v_per_v) }} V/V</dd>
+                    <dt>Gain</dt><dd>{{ '%.6f'|format(summary.gain_db) }} dB</dd>
+                    <dt>Phase</dt><dd>{{ '%.6f'|format(summary.phase_deg) }} °</dd></dl>
+                    <p class="helper">AC excitation = 1 V · small-signal<br>เฟส principal angle −180…180°</p>
+                    {% else %}
+                    <dl class="result-list"><dt>Vin peak-to-peak</dt><dd>{{ '%.6f'|format(summary.vin_pp_v) }} V</dd>
+                    <dt>Vout peak-to-peak</dt><dd>{{ '%.6f'|format(summary.vout_pp_v) }} V</dd>
+                    <dt>Vpp ratio</dt><dd>{{ '%.6f'|format(summary.gain_pp) if summary.gain_pp is not none else 'not determined' }} V/V</dd>
+                    <dt>Solver samples</dt><dd>{{ summary.samples }}</dd></dl>
+                    <p class="helper">วัด amplitude จาก 5 คาบสุดท้าย ไม่ใช่ AC gain โดยตรงเมื่อสัญญาณบิดเบือน</p>
+                    {% endif %}
+                    <p class="helper">Run: <code>{{ simulation.run_id[:12] }}</code><br><time>{{ simulation.run_time }}</time></p>
+                </div>
+                {% endif %}
                 {% if result %}
-                <div class="space-y-3">
+                <div id="analytical-results" class="run-content">
+                    <p class="result-source">Analytical DC · constant β / VBE</p>
                     <div class="bg-white p-3 border rounded shadow-sm">
                         <span class="block text-slate-500 text-sm">ย่านการทำงาน:</span>
                         <span class="text-lg font-bold text-slate-800">{{ result.region }}</span>
@@ -256,56 +336,36 @@
                         <tr><td class="py-2">IE</td><td class="py-2">{{ "%.2f"|format(result.ie_ma) }} mA</td></tr>
                     </table>
                 </div>
-                {% else %}
+                {% elif not simulation and not error %}
                 <p class="text-slate-400 text-sm">กรอกค่าพารามิเตอร์ด้านซ้ายแล้วกดปุ่มคำนวณ</p>
                 {% endif %}
             </div>
         </form>
-
-        <script>
-            const modeSelect = document.getElementById('mode');
-
-            const modeNames = {
-                divider: 'Voltage Divider Bias',
-                fixed: 'Fixed Bias',
-                emitter: 'Emitter Bias',
-            };
-
-            const labelMap = {
-                vcc: v => `Vcc = ${v} V`,
-                rb:  v => `RB = ${v} kΩ`,
-                r1:  v => `R1 = ${v} kΩ`,
-                r2:  v => `R2 = ${v} kΩ`,
-                rc:  v => `RC = ${v} kΩ`,
-                re:  v => `RE = ${v} kΩ`,
-                beta: v => `Q1 NPN (β = ${v})`,
-            };
-
-            function refreshLabels() {
-                document.querySelectorAll('[data-bind]').forEach(el => {
-                    const input = document.getElementById(el.dataset.bind);
-                    const formatter = labelMap[el.dataset.bind];
-                    if (input && formatter) {
-                        el.textContent = formatter(input.value);
-                    }
-                });
-            }
-
-            function applyMode() {
-                const mode = modeSelect.value;
-                document.querySelectorAll('[data-mode]').forEach(el => {
-                    el.classList.toggle('hidden', !el.dataset.mode.split(/\s+/).includes(mode));
-                });
-                document.querySelectorAll('[data-circuit]').forEach(el => {
-                    el.classList.toggle('hidden', el.dataset.circuit !== mode);
-                });
-                document.getElementById('mode-label').textContent = modeNames[mode] || mode;
-                refreshLabels();
-            }
-
-            modeSelect.addEventListener('change', applyMode);
-            document.querySelectorAll('input').forEach(i => i.addEventListener('input', refreshLabels));
-            applyMode();
-        </script>
+        {% if simulation %}
+        {% if simulation.analysis != 'dc' %}
+        <section class="panel run-content" id="plots" aria-labelledby="plots-title">
+            <div class="section-header"><h2 id="plots-title">{{ 'AC frequency response' if simulation.analysis == 'ac' else 'Transient response' }}</h2><a href="#run-evidence">ตรวจที่มาของข้อมูล</a></div>
+            {% if simulation.analysis == 'ac' %}
+            <p class="helper">Logarithmic frequency (Hz) · Gain = Vout / Vin · ข้อมูลจริงจาก {{ simulation.series.frequency_hz|length }} จุด</p>
+            <div class="chart-grid"><figure><h3>Gain magnitude</h3><svg id="gain-chart" role="img" aria-label="Bode gain in dB against frequency in Hz"></svg><figcaption>Gain (dB) · 20 log₁₀ |Vout/Vin|</figcaption></figure>
+            <figure><h3>Phase</h3><svg id="phase-chart" role="img" aria-label="Bode phase in degrees against frequency in Hz"></svg><figcaption>Phase (degrees), wrapped −180…180°</figcaption></figure></div>
+            {% else %}
+            <p class="helper">20 คาบที่จำลอง · กราฟแสดง 5 คาบสุดท้าย เพื่อลดผล startup</p>
+            <figure><div class="legend"><span class="vin-key">Vin — generator</span><span class="vout-key">Vout -- load</span></div><svg id="transient-chart" role="img" aria-label="Vin and Vout voltage in V against time in ms"></svg><figcaption>Voltage (V) · Time (ms) · Vin ก่อน Cin / Vout หลัง Cout</figcaption></figure>
+            {% endif %}
+            <noscript>เปิด JavaScript เพื่อแสดงกราฟ ข้อมูลตัวเลขและหลักฐานผลรันอยู่ด้านล่าง</noscript>
+        </section>
+        {% endif %}
+        <section class="panel run-content evidence" id="run-evidence">
+            <div class="section-header"><h2>Run evidence</h2><button type="button" id="download-json" class="secondary">Download run JSON</button></div>
+            <p class="helper">ผลจาก ngspice จริง ไม่ใช่ Analytical หรือกราฟตัวอย่าง · <a href="{{ simulation.model_source }}" target="_blank" rel="noopener">Model source</a></p>
+            <details><summary>Model SHA-256 &amp; engine version</summary><p><code>{{ simulation.model_sha256 }}</code></p><pre>{{ simulation.engine_version }}</pre></details>
+            <details><summary>Netlist ที่ใช้รัน</summary><pre id="netlist-output">{{ simulation.netlist }}</pre></details>
+            <details><summary>ngspice run log</summary><pre id="log-output">{{ simulation.log }}</pre></details>
+            <script type="application/json" id="simulation-data">{{ simulation|tojson }}</script>
+        </section>
+        {% endif %}
+        <footer><p>Analytical ใช้สมมติฐาน β / VBE คงที่ ส่วน SPICE ใช้ PN2222 model จึงไม่จำเป็นต้องได้ตัวเลขเท่ากัน</p><p>Local educational simulator · ไม่มีการส่งพารามิเตอร์ไปยังบริการภายนอก</p></footer>
+    </main>
 </body>
 </html>

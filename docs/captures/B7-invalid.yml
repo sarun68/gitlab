@@ -1,0 +1,97 @@
+- generic [active] [ref=f13e1]:
+  - link "ข้ามไปเลือกการวิเคราะห์" [ref=f13e2] [cursor=pointer]:
+    - /url: "#analysis"
+  - main [ref=f13e3]:
+    - generic [ref=f13e4]:
+      - generic [ref=f13e5]:
+        - heading "CE Amplifier Lab" [level=1] [ref=f13e6]
+        - paragraph [ref=f13e7]: ENG29 2121 · Lab 04 — BJT Common-Emitter Simulator
+      - status [ref=f13e8]: Error · แก้ไขแล้วรันใหม่
+    - paragraph [ref=f13e9]:
+      - text: "SPICE model:"
+      - strong [ref=f13e10]: PN2222
+      - text: · Self-authored starter,
+      - strong [ref=f13e11]: not instructor-verified
+      - text: · โมเดลตัวอย่าง ไม่ใช่ชุดรับรองจากผู้สอน
+    - generic [ref=f13e12]:
+      - generic [ref=f13e13]:
+        - heading "Parameters" [level=2] [ref=f13e14]
+        - generic [ref=f13e15]:
+          - generic [ref=f13e16]: การวิเคราะห์ / Analysis
+          - combobox "การวิเคราะห์ / Analysis" [ref=f13e17]:
+            - option "Analytical DC · Lab 3"
+            - option "SPICE DC · Operating Point"
+            - option "SPICE AC · Frequency Response"
+            - option "SPICE Transient · Waveforms" [selected]
+        - generic [ref=f13e18]:
+          - generic [ref=f13e19]: โหมดไบอัส / Bias
+          - combobox "โหมดไบอัส / Bias" [ref=f13e20]:
+            - option "Voltage Divider Bias" [selected]
+            - option "Fixed Bias" [disabled]
+            - option "Emitter Bias" [disabled]
+        - generic [ref=f13e21]:
+          - generic [ref=f13e22]: VCC (V)
+          - spinbutton "VCC (V)" [ref=f13e23]: "12"
+        - generic [ref=f13e24]:
+          - generic [ref=f13e25]: R1 (kΩ)
+          - spinbutton "R1 (kΩ)" [ref=f13e26]: "100"
+        - generic [ref=f13e27]:
+          - generic [ref=f13e28]: R2 (kΩ)
+          - spinbutton "R2 (kΩ)" [ref=f13e29]: "22"
+        - generic [ref=f13e30]:
+          - generic [ref=f13e31]: RC (kΩ)
+          - spinbutton "RC (kΩ)" [ref=f13e32]: "2.2"
+        - generic [ref=f13e33]:
+          - generic [ref=f13e34]: RE (kΩ)
+          - spinbutton "RE (kΩ)" [ref=f13e35]: "0"
+        - generic [ref=f13e36]:
+          - generic [ref=f13e37]: RL (kΩ)
+          - spinbutton "RL (kΩ)" [ref=f13e38]: "10"
+        - generic [ref=f13e39]:
+          - generic [ref=f13e40]: Cin (µF)
+          - spinbutton "Cin (µF)" [ref=f13e41]: "10"
+        - generic [ref=f13e42]:
+          - generic [ref=f13e43]: Cout (µF)
+          - spinbutton "Cout (µF)" [ref=f13e44]: "10"
+        - generic [ref=f13e45]:
+          - generic [ref=f13e46]: Amplitude (mV peak)
+          - spinbutton "Amplitude (mV peak)" [ref=f13e47]: "20"
+        - generic [ref=f13e48]:
+          - generic [ref=f13e49]: Frequency (Hz)
+          - spinbutton "Frequency (Hz)" [ref=f13e50]: "2000"
+        - paragraph [ref=f13e51]: CE reference เท่านั้น · Q1 PN2222 · 27 °C · ไม่มี emitter bypass
+        - button "Run Simulation" [ref=f13e52] [cursor=pointer]
+      - generic [ref=f13e53]:
+        - heading "Circuit reference" [level=2] [ref=f13e54]
+        - paragraph [ref=f13e55]: วงจรและจุดวัดของการวิเคราะห์ที่เลือก
+        - generic [ref=f13e56]:
+          - img "CE Voltage Divider amplifier R1 and RC connect VCC to base and collector. R2 and RE connect base and emitter to ground. PN2222 NPN, input through Cin, output through Cout to RL. Shared ground, no emitter bypass." [ref=f13e57]:
+            - generic [ref=f13e73]:
+              - generic [ref=f13e74]: +VCC
+              - generic [ref=f13e75]: R1
+              - generic [ref=f13e76]: RC
+              - generic [ref=f13e77]: R2
+              - generic [ref=f13e78]: RE
+              - generic [ref=f13e79]: RL
+              - generic [ref=f13e80]: Cin
+              - generic [ref=f13e81]: Cout
+              - generic [ref=f13e82]: Vin
+              - generic [ref=f13e83]: Vout
+              - generic [ref=f13e84]: PN2222
+          - paragraph [ref=f13e88]:
+            - strong [ref=f13e89]: "Vin:"
+            - text: generator ก่อน Cin
+            - strong [ref=f13e90]: "Vout:"
+            - text: คร่อม RL หลัง Cout
+            - strong [ref=f13e91]: "DC:"
+            - text: วัด VB, VE, VC ที่ขา Q1
+      - generic [ref=f13e92]:
+        - heading "Engineering results" [level=2] [ref=f13e93]
+        - alert [ref=f13e94]:
+          - strong [ref=f13e95]: รันไม่สำเร็จ
+          - paragraph [ref=f13e96]: re_kohm must be finite and within [0.001, 1000000]
+          - paragraph [ref=f13e97]: ตรวจค่าและหน่วย หรือการติดตั้ง ngspice แล้วกด Run อีกครั้ง
+        - generic [ref=f13e98]: "Bias: Voltage Divider Bias"
+    - generic [ref=f13e99]:
+      - paragraph [ref=f13e100]: Analytical ใช้สมมติฐาน β / VBE คงที่ ส่วน SPICE ใช้ PN2222 model จึงไม่จำเป็นต้องได้ตัวเลขเท่ากัน
+      - paragraph [ref=f13e101]: Local educational simulator · ไม่มีการส่งพารามิเตอร์ไปยังบริการภายนอก

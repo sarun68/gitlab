@@ -1,0 +1,166 @@
+- generic [active] [ref=f9e1]:
+  - link "ข้ามไปเลือกการวิเคราะห์" [ref=f9e2] [cursor=pointer]:
+    - /url: "#analysis"
+  - main [ref=f9e3]:
+    - generic [ref=f9e4]:
+      - generic [ref=f9e5]:
+        - heading "CE Amplifier Lab" [level=1] [ref=f9e6]
+        - paragraph [ref=f9e7]: ENG29 2121 · Lab 04 — BJT Common-Emitter Simulator
+      - status [ref=f9e8]: Success · ผลจากรอบล่าสุด
+    - paragraph [ref=f9e9]:
+      - text: "SPICE model:"
+      - strong [ref=f9e10]: PN2222
+      - text: · Self-authored starter,
+      - strong [ref=f9e11]: not instructor-verified
+      - text: · โมเดลตัวอย่าง ไม่ใช่ชุดรับรองจากผู้สอน
+    - generic [ref=f9e12]:
+      - generic [ref=f9e13]:
+        - heading "Parameters" [level=2] [ref=f9e14]
+        - generic [ref=f9e15]:
+          - generic [ref=f9e16]: การวิเคราะห์ / Analysis
+          - combobox "การวิเคราะห์ / Analysis" [ref=f9e17]:
+            - option "Analytical DC · Lab 3"
+            - option "SPICE DC · Operating Point"
+            - option "SPICE AC · Frequency Response" [selected]
+            - option "SPICE Transient · Waveforms"
+        - generic [ref=f9e18]:
+          - generic [ref=f9e19]: โหมดไบอัส / Bias
+          - combobox "โหมดไบอัส / Bias" [ref=f9e20]:
+            - option "Voltage Divider Bias" [selected]
+            - option "Fixed Bias" [disabled]
+            - option "Emitter Bias" [disabled]
+        - generic [ref=f9e21]:
+          - generic [ref=f9e22]: VCC (V)
+          - spinbutton "VCC (V)" [ref=f9e23]: "12"
+        - generic [ref=f9e24]:
+          - generic [ref=f9e25]: R1 (kΩ)
+          - spinbutton "R1 (kΩ)" [ref=f9e26]: "100"
+        - generic [ref=f9e27]:
+          - generic [ref=f9e28]: R2 (kΩ)
+          - spinbutton "R2 (kΩ)" [ref=f9e29]: "22"
+        - generic [ref=f9e30]:
+          - generic [ref=f9e31]: RC (kΩ)
+          - spinbutton "RC (kΩ)" [ref=f9e32]: "2.2"
+        - generic [ref=f9e33]:
+          - generic [ref=f9e34]: RE (kΩ)
+          - spinbutton "RE (kΩ)" [ref=f9e35]: "1"
+        - generic [ref=f9e36]:
+          - generic [ref=f9e37]: RL (kΩ)
+          - spinbutton "RL (kΩ)" [ref=f9e38]: "10"
+        - generic [ref=f9e39]:
+          - generic [ref=f9e40]: Cin (µF)
+          - spinbutton "Cin (µF)" [ref=f9e41]: "10"
+        - generic [ref=f9e42]:
+          - generic [ref=f9e43]: Cout (µF)
+          - spinbutton "Cout (µF)" [ref=f9e44]: "10"
+        - generic [ref=f9e45]:
+          - generic [ref=f9e46]: Frequency (Hz)
+          - spinbutton "Frequency (Hz)" [ref=f9e47]: "1000"
+        - generic [ref=f9e48]:
+          - generic [ref=f9e49]: Sweep start (Hz)
+          - spinbutton "Sweep start (Hz)" [ref=f9e50]: "10"
+        - generic [ref=f9e51]:
+          - generic [ref=f9e52]: Sweep stop (Hz)
+          - spinbutton "Sweep stop (Hz)" [ref=f9e53]: "100000000"
+        - paragraph [ref=f9e54]: CE reference เท่านั้น · Q1 PN2222 · 27 °C · ไม่มี emitter bypass
+        - button "Run Simulation" [ref=f9e55] [cursor=pointer]
+      - generic [ref=f9e56]:
+        - heading "Circuit reference" [level=2] [ref=f9e57]
+        - paragraph [ref=f9e58]: วงจรและจุดวัดของการวิเคราะห์ที่เลือก
+        - generic [ref=f9e59]:
+          - img "CE Voltage Divider amplifier R1 and RC connect VCC to base and collector. R2 and RE connect base and emitter to ground. PN2222 NPN, input through Cin, output through Cout to RL. Shared ground, no emitter bypass." [ref=f9e60]:
+            - generic [ref=f9e76]:
+              - generic [ref=f9e77]: +VCC
+              - generic [ref=f9e78]: R1
+              - generic [ref=f9e79]: RC
+              - generic [ref=f9e80]: R2
+              - generic [ref=f9e81]: RE
+              - generic [ref=f9e82]: RL
+              - generic [ref=f9e83]: Cin
+              - generic [ref=f9e84]: Cout
+              - generic [ref=f9e85]: Vin
+              - generic [ref=f9e86]: Vout
+              - generic [ref=f9e87]: PN2222
+          - paragraph [ref=f9e91]:
+            - strong [ref=f9e92]: "Vin:"
+            - text: generator ก่อน Cin
+            - strong [ref=f9e93]: "Vout:"
+            - text: คร่อม RL หลัง Cout
+            - strong [ref=f9e94]: "DC:"
+            - text: วัด VB, VE, VC ที่ขา Q1
+      - generic [ref=f9e95]:
+        - heading "Engineering results" [level=2] [ref=f9e96]
+        - generic [ref=f9e97]: "Bias: Voltage Divider Bias"
+        - generic [ref=f9e98]:
+          - paragraph [ref=f9e99]: "Engine: ngspice · ACModel: PN2222"
+          - paragraph [ref=f9e100]: "Sample near requested frequency:"
+          - generic [ref=f9e101]:
+            - term [ref=f9e102]: Frequency
+            - definition [ref=f9e103]: 1000 Hz
+            - term [ref=f9e104]: "|Vout/Vin|"
+            - definition [ref=f9e105]: 1.757780 V/V
+            - term [ref=f9e106]: Gain
+            - definition [ref=f9e107]: 4.899289 dB
+            - term [ref=f9e108]: Phase
+            - definition [ref=f9e109]: "-179.873340 °"
+          - paragraph [ref=f9e110]: AC excitation = 1 V · small-signalเฟส principal angle −180…180°
+          - paragraph [ref=f9e111]:
+            - text: "Run:"
+            - code [ref=f9e112]: cd31f50b1150
+            - time [ref=f9e113]: 2026-11-24T11:04:34.722909+00:00
+    - region "AC frequency response" [ref=f9e114]:
+      - generic [ref=f9e115]:
+        - heading "AC frequency response" [level=2] [ref=f9e116]
+        - link "ตรวจที่มาของข้อมูล" [ref=f9e117] [cursor=pointer]:
+          - /url: "#run-evidence"
+      - paragraph [ref=f9e118]: Logarithmic frequency (Hz) · Gain = Vout / Vin · ข้อมูลจริงจาก 281 จุด
+      - generic [ref=f9e119]:
+        - figure "Gain (dB) · 20 log₁₀ |Vout/Vin|" [ref=f9e120]:
+          - heading "Gain magnitude" [level=3] [ref=f9e121]
+          - img "Bode gain in dB against frequency in Hz" [ref=f9e122]:
+            - generic [ref=f9e123]: "1.17"
+            - generic [ref=f9e124]: "10"
+            - generic [ref=f9e125]: "2.2"
+            - generic [ref=f9e126]: "562"
+            - generic [ref=f9e127]: "3.23"
+            - generic [ref=f9e128]: "3e+4"
+            - generic [ref=f9e129]: "4.27"
+            - generic [ref=f9e130]: "2e+6"
+            - generic [ref=f9e131]: "5.3"
+            - generic [ref=f9e132]: "1e+8"
+            - generic [ref=f9e133]: Frequency (Hz, log)
+            - generic [ref=f9e134]: Gain (dB)
+            - 'generic "gain_db: 281 actual solver samples" [ref=f9e135]'
+        - figure "Phase (degrees), wrapped −180…180°" [ref=f9e137]:
+          - heading "Phase" [level=3] [ref=f9e138]
+          - img "Bode phase in degrees against frequency in Hz" [ref=f9e139]:
+            - generic [ref=f9e140]: "-223"
+            - generic [ref=f9e141]: "10"
+            - generic [ref=f9e142]: "-112"
+            - generic [ref=f9e143]: "562"
+            - generic [ref=f9e144]: "6e-4"
+            - generic [ref=f9e145]: "3e+4"
+            - generic [ref=f9e146]: "112"
+            - generic [ref=f9e147]: "2e+6"
+            - generic [ref=f9e148]: "223"
+            - generic [ref=f9e149]: "1e+8"
+            - generic [ref=f9e150]: Frequency (Hz, log)
+            - generic [ref=f9e151]: Phase (degrees)
+            - 'generic "phase_deg: 281 actual solver samples" [ref=f9e152]'
+    - generic [ref=f9e154]:
+      - generic [ref=f9e155]:
+        - heading "Run evidence" [level=2] [ref=f9e156]
+        - button "Download run JSON" [ref=f9e157] [cursor=pointer]
+      - paragraph [ref=f9e158]:
+        - text: ผลจาก ngspice จริง ไม่ใช่ Analytical หรือกราฟตัวอย่าง ·
+        - link "Model source" [ref=f9e159] [cursor=pointer]:
+          - /url: https://github.com/ngspice/ngspice/blob/master/examples/tclspice/tcl-testbench1/PN2222.mod
+      - group [ref=f9e160]:
+        - generic "Model SHA-256 & engine version" [ref=f9e161] [cursor=pointer]
+      - group [ref=f9e162]:
+        - generic "Netlist ที่ใช้รัน" [ref=f9e163] [cursor=pointer]
+      - group [ref=f9e164]:
+        - generic "ngspice run log" [ref=f9e165] [cursor=pointer]
+    - generic [ref=f9e166]:
+      - paragraph [ref=f9e167]: Analytical ใช้สมมติฐาน β / VBE คงที่ ส่วน SPICE ใช้ PN2222 model จึงไม่จำเป็นต้องได้ตัวเลขเท่ากัน
+      - paragraph [ref=f9e168]: Local educational simulator · ไม่มีการส่งพารามิเตอร์ไปยังบริการภายนอก

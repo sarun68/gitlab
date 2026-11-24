@@ -1,0 +1,48 @@
+{
+  "analysis": "dc",
+  "engine": "C:\\Users\\B6826123\\AppData\\Local\\Programs\\ngspice-47\\Spice64\\bin\\ngspice_con.exe",
+  "engine_version": "******\n** ngspice-47 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2026, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Aug 11 2026   13:55:25\n******",
+  "input_reference": "generator node in, before Cin",
+  "instructor_verified": false,
+  "log": "******\n** ngspice-47 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2026, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Aug 11 2026   13:55:25\n******\n\nBatch mode\n\nSimulation output goes to rawfile: run.raw\nComments and warnings go to log-file: run.log\n\n\nNote: No compatibility mode selected!\n\n\nCircuit: lab04 self-authored ce reference - not instructor verified\n\nASCII raw file \"run.raw\"\nDoing analysis at TEMP = 27.000000 and TNOM = 27.000000\n\nUsing SPARSE 1.3 as Direct Linear Solver\nNo. of Data Columns : 6  \n\nNo. of Data Rows : 1\n\nTotal analysis time (seconds) = 0.0004103\n\nTotal elapsed time (seconds) = 0.004 \n\nTotal DRAM available = 16117.609 MB.\nDRAM currently available = 7606.184 MB.\nMaximum ngspice program size =   10.352 MB.\nCurrent ngspice program size =   10.352 MB.\n\n",
+  "model": "PN2222",
+  "model_sha256": "372bc60e9e920164d79639743b5778ab39b736cbbb8aa6c840eaa2fded2d91f9",
+  "model_source": "https://github.com/ngspice/ngspice/blob/master/examples/tclspice/tcl-testbench1/PN2222.mod",
+  "netlist": "Lab04 self-authored CE reference - not instructor verified\n* Vin: generator before Cin. Vout: RL node after Cout. No bypass capacitor.\n.temp 27\nVCC vcc 0 DC 12\nVIN in 0 DC 0 AC 1 SIN(0 0.01 1000)\nR1 vcc base 100000\nR2 base 0 22000\nRC vcc collector 2200\nRE emitter 0 1000\nRL out 0 10000\nCin in base 1e-05\nCout collector out 1e-05\nQ1 collector base emitter PN2222\n.model PN2222   NPN(Is=14.34f Xti=3 Eg=1.11 Vaf=74.03 Bf=255.9 Ne=1.307\n+               Ise=14.34f Ikf=.2847 Xtb=1.5 Br=6.092 Nc=2 Isc=0 Ikr=0 Rc=1\n+               Cjc=7.306p Mjc=.3416 Vjc=.75 Fc=.5 Cje=22.01p Mje=.377 Vje=.75\n+               Tr=46.91n Tf=411.1p Itf=.6 Vtf=1.7 Xtf=3 Rb=10)\n\n*               Fairchild        pid=19          case=TO92\n*               88-09-07 bam    creation\n.save v(base) v(emitter) v(collector) v(in) v(out) @q1[ic]\n.op\n.end\n",
+  "output_reference": "load node out, after Cout",
+  "parameters": {
+    "ac_points_per_decade": 40,
+    "ac_start_hz": 10,
+    "ac_stop_hz": 100000000,
+    "amplitude_mv": 10,
+    "cin_uf": 10,
+    "cout_uf": 10,
+    "frequency_hz": 1000,
+    "r1_kohm": 100,
+    "r2_kohm": 22,
+    "rc_kohm": 2.2,
+    "re_kohm": 1,
+    "rl_kohm": 10,
+    "transient_periods": 20,
+    "vcc_v": 12
+  },
+  "raw_text": "Title: lab04 self-authored ce reference - not instructor verified\nDate: Tue Nov 24 18:12:46  2026\nCommand: ngspice-47, Build Aug 11 2026   13:55:25\nPlotname: Operating Point\nFlags: real\nNo. Variables: 6\nNo. Points: 1       \nVariables:\n\t0\tv(base)\tvoltage\n\t1\tv(emitter)\tvoltage\n\t2\tv(collector)\tvoltage\n\t3\tv(in)\tvoltage\n\t4\tv(out)\tvoltage\n\t5\ti(@q1[ic])\tcurrent\nValues:\n0\t\t2.015763451107448e+00\n\t1.364230727224232e+00\n\t9.016769239238117e+00\n\t0.000000000000000e+00\n\t0.000000000000000e+00\n\t1.356194559509726e-03\n",
+  "run_id": "282ef34746664ce19cdf8dbc2c5cc1f7",
+  "run_time": "2026-11-24T11:12:46.112461+00:00",
+  "status": "success",
+  "temperature_c": 27,
+  "units": {
+    "ic_a": "A",
+    "vb_v": "V",
+    "vc_v": "V",
+    "vce_v": "V",
+    "ve_v": "V"
+  },
+  "values": {
+    "ic_a": 0.001356194559509726,
+    "vb_v": 2.015763451107448,
+    "vc_v": 9.016769239238117,
+    "vce_v": 7.652538512013885,
+    "ve_v": 1.364230727224232
+  }
+}
